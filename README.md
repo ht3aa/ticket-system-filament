@@ -23,38 +23,24 @@ A modern ticket management system built with Laravel and Filament, providing a p
 
 ## Installation
 
-1. Clone the repository:
+1. Clone and setup:
 
 ```bash
 git clone git@github.com:ht3aa/ticket-system-filament.git
 cd ticket-system-filament
-```
-
-2. Install PHP dependencies:
-
-```bash
+git checkout dev
 composer install
-```
-
-3. Install NPM dependencies:
-
-```bash
 npm install
 ```
 
-4. Create environment file:
+2. Configure environment:
 
 ```bash
 cp .env.example .env
-```
-
-5. Generate application key:
-
-```bash
 php artisan key:generate
 ```
 
-6. Configure your database in `.env` file:
+3. Setup database in `.env`:
 
 ```env
 DB_CONNECTION=mysql
@@ -65,33 +51,27 @@ DB_USERNAME=root
 DB_PASSWORD=
 ```
 
-7. Run migrations:
+4. Run migrations:
 
 ```bash
-php artisan migrate
+php artisan migrate --seed
 ```
 
-8. Create an admin user:
+admin user is
 
-```bash
-php artisan make:filament-user
+```php
+email: admin@example.com
+password: password
 ```
 
-9. Start the development server:
+5. Start the servers:
 
 ```bash
 php artisan serve
-```
-
-10. In a separate terminal, start Vite:
-
-```bash
 npm run dev
 ```
 
-## Accessing the Admin Panel
-
-Visit `http://localhost:8000/user/login` and log in with your admin credentials.
+Visit `http://localhost:8000/admin/login` to access the admin panel.
 
 ## Development
 
