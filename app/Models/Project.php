@@ -51,4 +51,9 @@ class Project extends Model
     {
         return $this->hasMany(ProjectLabel::class);
     }
+
+    public function labelsStatuses()
+    {
+        return $this->hasMany(ProjectLabelStatus::class);
+    }
 }

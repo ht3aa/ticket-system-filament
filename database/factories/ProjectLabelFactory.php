@@ -17,8 +17,11 @@ class ProjectLabelFactory extends Factory
      */
     public function definition(): array
     {
+        $baseTitles = ['Bug', 'Feature', 'Enhancement', 'Documentation', 'Urgent'];
+        $baseTitle = fake()->randomElement($baseTitles);
+
         return [
-            'title' => fake()->randomElement(['Bug', 'Feature', 'Enhancement', 'Documentation', 'Urgent']),
+            'title' => $baseTitle . ' ' . fake()->unique()->numberBetween(1, 1000),
             'description' => fake()->sentence(),
             'color' => fake()->hexColor(),
             'project_id' => Project::factory(),

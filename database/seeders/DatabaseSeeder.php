@@ -25,9 +25,17 @@ class DatabaseSeeder extends Seeder
             ->has(\App\Models\ProjectRole::factory(3), 'roles')
             ->has(\App\Models\ProjectMember::factory(5)->state(fn(array $attributes, $project) => ['project_id' => $project]), 'members')
             ->has(\App\Models\ProjectStatus::factory(4), 'statuses')
-            ->has(\App\Models\ProjectLabel::factory(5), 'labels')
             ->create()
             ->each(function ($project) {
+                // Create labels for the project
+                $labelTypes = ['Bug', 'Feature', 'Enhancement', 'Documentation', 'Urgent'];
+                foreach ($labelTypes as $index => $type) {
+                    \App\Models\ProjectLabel::factory()->create([
+                        'title' => $type . ' ' . ($project->id * 100 + $index + 1),
+                        'project_id' => $project->id,
+                    ]);
+                }
+
                 // Create permissions for the project
                 $permissions = \App\Models\ProjectPermission::factory(5)->create(['project_id' => $project->id]);
                 // Attach permissions to each role with project_id in the pivot

@@ -14,7 +14,13 @@ class ProjectLabel extends Model
         'title',
         'description',
         'color',
+        'project_id',
     ];
+
+    public function project()
+    {
+        return $this->belongsTo(Project::class);
+    }
 
     public function tickets()
     {
