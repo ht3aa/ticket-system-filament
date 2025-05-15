@@ -97,6 +97,7 @@ class GenerateLabels extends Action
         return Repeater::make('labels')
             ->extraFieldWrapperAttributes([
                 'data-id' => 'labels-repeater',
+                'class' => 'hidden',
             ])
             ->reorderable(false)
             ->itemLabel(function ($state, $container) {
