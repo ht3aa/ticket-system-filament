@@ -5,12 +5,17 @@ namespace App\Filament\Member\Resources;
 use App\Filament\Member\Resources\TicketResource\Enums\StaffType;
 use App\Filament\Member\Resources\TicketResource\Pages;
 use App\Filament\Member\Resources\TicketResource\RelationManagers;
+use App\Models\Project;
+use App\Models\ProjectLabel;
+use App\Models\ProjectStatus;
 use App\Models\Ticket;
 use Filament\Forms;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use FilamentTiptapEditor\TiptapEditor;
 use Illuminate\Database\Eloquent\Builder;
 
 class TicketResource extends Resource
@@ -23,24 +28,47 @@ class TicketResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('title')
-                    ->required(),
-                Forms\Components\Textarea::make('description')
-                    ->columnSpanFull(),
-                Forms\Components\TextInput::make('code')
-                    ->required(),
-                Forms\Components\TextInput::make('parent_id')
-                    ->numeric(),
-                Forms\Components\TextInput::make('status_id')
-                    ->required()
-                    ->numeric(),
-                Forms\Components\TextInput::make('project_id')
-                    ->required()
-                    ->numeric(),
-                Forms\Components\TextInput::make('project_label_id')
-                    ->required()
-                    ->numeric(),
-            ]);
+                Section::make('Ticket Information')
+                    ->schema([
+                        Forms\Components\TextInput::make('title')
+                            ->required(),
+                        TiptapEditor::make('description')
+                            ->profile('simple')
+                            ->required(),
+                    ])
+                    ->columnSpan(8),
+                Section::make('Ticket Information')
+                    ->schema([
+                        Forms\Components\TextInput::make('code')
+                            ->default(fn() => 'TICKET-' . str_pad(Ticket::count() + 1, 4, '0', STR_PAD_LEFT))
+                            ->readOnly()
+                            ->required(),
+
+
+                        Forms\Components\Select::make('project_id')
+                            ->options(Project::all()->pluck('title', 'id'))
+                            ->extraInputAttributes([
+                                '@change' => "() => {
+                                    \$wire.set('data.project_status_id', null);
+                                    \$wire.set('data.project_label_id', null);
+                                }",
+                            ])
+                            ->required(),
+
+                        Forms\Components\Select::make('project_status_id')
+                            ->options(fn($get) => ProjectStatus::where('project_id', $get('project_id'))->pluck('title', 'id'))
+                            ->required(),
+
+                        Forms\Components\Select::make('project_label_id')
+                            ->options(fn($get) => ProjectLabel::where('project_id', $get('project_id'))->pluck('title', 'id'))
+                            ->required(),
+
+                        Forms\Components\Select::make('parent_id')
+                            ->options(Ticket::all()->pluck('title', 'id')),
+                    ])
+                    ->columnSpan(4),
+
+            ])->columns(12);
     }
 
     public static function table(Table $table): Table
