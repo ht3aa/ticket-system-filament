@@ -21,4 +21,9 @@ class ProjectStatus extends Model
     {
         return $this->belongsTo(Project::class);
     }
+
+    public function tickets()
+    {
+        return $this->hasMany(Ticket::class);
+    }
 }

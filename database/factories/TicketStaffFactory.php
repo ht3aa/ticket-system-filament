@@ -2,8 +2,9 @@
 
 namespace Database\Factories;
 
+use App\Filament\Member\Resources\TicketResource\Enums\StaffType;
 use App\Models\ProjectMember;
-use App\Models\TicketInformation;
+use App\Models\Ticket;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -19,9 +20,9 @@ class TicketStaffFactory extends Factory
     public function definition(): array
     {
         return [
-            'ticket_id' => TicketInformation::factory(),
-            'member_id' => ProjectMember::factory(),
-            'type' => fake()->randomElement(['assigned', 'accountable', 'consulted', 'informed']),
+            'ticket_id' => Ticket::factory(),
+            'project_member_id' => ProjectMember::factory(),
+            'type' => fake()->randomElement(array_column(StaffType::cases(), 'value')),
         ];
     }
 }

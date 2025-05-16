@@ -5,12 +5,13 @@ namespace Database\Factories;
 use App\Models\Project;
 use App\Models\ProjectLabel;
 use App\Models\ProjectStatus;
+use App\Models\Ticket;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Model>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Ticket>
  */
-class TicketInformationFactory extends Factory
+class TicketFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -24,9 +25,9 @@ class TicketInformationFactory extends Factory
             'description' => fake()->paragraph(),
             'code' => fake()->unique()->regexify('[A-Z]{2}[0-9]{4}'),
             'parent_id' => null,
-            'status_id' => ProjectStatus::factory(),
+            'project_status_id' => ProjectStatus::factory(),
             'project_id' => Project::factory(),
-            'label_id' => ProjectLabel::factory(),
+            'project_label_id' => ProjectLabel::factory(),
         ];
     }
 }

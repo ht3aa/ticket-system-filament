@@ -11,17 +11,17 @@ class ProjectLabelStatus extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'status_id',
-        'label_id',
+        'project_status_id',
+        'project_label_id',
     ];
 
-    public function status()
+    public function projectStatus()
     {
-        return $this->belongsTo(ProjectStatus::class, 'status_id');
+        return $this->belongsTo(ProjectStatus::class);
     }
 
-    public function label()
+    public function projectLabel()
     {
-        return $this->belongsTo(ProjectLabel::class, 'label_id');
+        return $this->belongsTo(ProjectLabel::class);
     }
 }

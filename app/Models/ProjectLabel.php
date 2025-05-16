@@ -24,11 +24,6 @@ class ProjectLabel extends Model
 
     public function tickets()
     {
-        return $this->hasMany(TicketInformation::class, 'label_id');
-    }
-
-    public function statuses()
-    {
-        return $this->belongsToMany(ProjectStatus::class, 'project_labels_statuses', 'label_id', 'status_id');
+        return $this->hasMany(Ticket::class);
     }
 }

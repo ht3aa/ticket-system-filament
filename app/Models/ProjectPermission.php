@@ -20,10 +20,4 @@ class ProjectPermission extends Model
     {
         return $this->belongsTo(Project::class);
     }
-
-    public function roles()
-    {
-        return $this->belongsToMany(ProjectRole::class, 'project_roles_permissions', 'permission_id', 'role_id')
-            ->withPivot('project_id');
-    }
 }

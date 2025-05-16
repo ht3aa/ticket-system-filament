@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('project_roles_permissions', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('role_id')->constrained('project_roles')->cascadeOnDelete();
-            $table->foreignId('permission_id')->constrained('project_permissions')->cascadeOnDelete();
+            $table->foreignId('project_role_id')->constrained('project_roles')->cascadeOnDelete();
+            $table->foreignId('project_permission_id')->constrained('project_permissions')->cascadeOnDelete();
             $table->foreignId('project_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
             $table->softDeletes();

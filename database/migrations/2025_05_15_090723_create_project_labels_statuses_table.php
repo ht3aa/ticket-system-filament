@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('project_label_statuses', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('status_id')->constrained('project_statuses')->cascadeOnDelete();
-            $table->foreignId('label_id')->constrained('project_labels')->cascadeOnDelete();
+            $table->foreignId('project_status_id')->constrained('project_statuses')->cascadeOnDelete();
+            $table->foreignId('project_label_id')->constrained('project_labels')->cascadeOnDelete();
             $table->foreignId('project_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
             $table->softDeletes();

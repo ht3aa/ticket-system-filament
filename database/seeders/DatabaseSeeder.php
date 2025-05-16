@@ -15,6 +15,14 @@ class DatabaseSeeder extends Seeder
         \App\Models\User::factory()->create([
             'name' => 'Admin User',
             'email' => 'admin@example.com',
+            'password' => 'password',
+        ]);
+
+        // create hasan user
+        \App\Models\User::factory()->create([
+            'name' => 'Hasan Tahseen',
+            'email' => 'hasan@example.com',
+            'password' => 'password',
         ]);
 
         // Create regular users
@@ -39,23 +47,23 @@ class DatabaseSeeder extends Seeder
                 // Create permissions for the project
                 $permissions = \App\Models\ProjectPermission::factory(5)->create(['project_id' => $project->id]);
                 // Attach permissions to each role with project_id in the pivot
-                $project->roles->each(function ($role) use ($permissions, $project) {
-                    $role->permissions()->attach(
-                        $permissions->pluck('id')->toArray(),
+                $project->roles->each(function ($role) use ($project) {
+                    $role->projectPermissions()->attach(
+                        $project->permissions->pluck('id')->toArray(),
                         ['project_id' => $project->id]
                     );
                 });
                 // Create tickets for each project
-                \App\Models\TicketInformation::factory(10)
+                \App\Models\Ticket::factory(10)
                     ->for($project)
-                    ->for($project->statuses->random(), 'status')
-                    ->for($project->labels->random(), 'label')
+                    ->for($project->statuses->random(), 'projectStatus')
+                    ->for($project->labels->random(), 'projectLabel')
                     ->create()
                     ->each(function ($ticket) use ($project) {
                         // Create staff members for each ticket
                         \App\Models\TicketStaff::factory(3)
                             ->for($ticket, 'ticket')
-                            ->for($project->members->random(), 'member')
+                            ->for($project->members->random(), 'projectMember')
                             ->create();
                     });
             });

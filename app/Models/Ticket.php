@@ -2,11 +2,14 @@
 
 namespace App\Models;
 
+use App\Models\Scopes\TicketScope;
+use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class TicketInformation extends Model
+#[ScopedBy(TicketScope::class)]
+class Ticket extends Model
 {
     use HasFactory, SoftDeletes;
 
@@ -15,34 +18,34 @@ class TicketInformation extends Model
         'description',
         'code',
         'parent_id',
-        'status_id',
+        'project_status_id',
         'project_id',
-        'label_id',
+        'project_label_id',
     ];
 
     public function parent()
     {
-        return $this->belongsTo(TicketInformation::class, 'parent_id');
+        return $this->belongsTo(Ticket::class);
     }
 
     public function children()
     {
-        return $this->hasMany(TicketInformation::class, 'parent_id');
+        return $this->hasMany(Ticket::class);
     }
 
-    public function status()
+    public function projectStatus()
     {
-        return $this->belongsTo(ProjectStatus::class, 'status_id');
+        return $this->belongsTo(ProjectStatus::class);
     }
 
     public function project()
     {
-        return $this->belongsTo(Project::class, 'project_id');
+        return $this->belongsTo(Project::class);
     }
 
-    public function label()
+    public function projectLabel()
     {
-        return $this->belongsTo(ProjectLabel::class, 'label_id');
+        return $this->belongsTo(ProjectLabel::class);
     }
 
     public function staff()

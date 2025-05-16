@@ -21,8 +21,8 @@ class MembersRelationManager extends RelationManager
                 Forms\Components\Hidden::make('project_id')
                     ->default($this->getOwnerRecord()->id),
 
-                Forms\Components\Select::make('project_member_id')
-                    ->relationship('projectMember', 'name')
+                Forms\Components\Select::make('user_id')
+                    ->relationship('user', 'name')
                     ->required(),
 
                 Forms\Components\Select::make('project_role_id')
@@ -35,9 +35,9 @@ class MembersRelationManager extends RelationManager
     {
         return $table
             ->recordTitleAttribute('title')
-            ->modifyQueryUsing(fn(Builder $query) => $query->with(['projectMember', 'projectRole']))
+            ->modifyQueryUsing(fn(Builder $query) => $query->with(['user', 'projectRole']))
             ->columns([
-                Tables\Columns\TextColumn::make('projectMember.name'),
+                Tables\Columns\TextColumn::make('user.name'),
                 Tables\Columns\TextColumn::make('projectRole.title'),
             ])
             ->filters([
