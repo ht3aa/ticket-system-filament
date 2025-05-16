@@ -15,9 +15,9 @@ enum GenerationLabelType: string
 
 class GenerateLabelsAction extends BaseGenerationAction
 {
-    protected ?string $repeaterFieldName = 'labels';
+    protected ?string $repeaterFormFieldName = 'labels';
 
-    protected ?string $selectFieldName = 'generation_type';
+    protected ?string $selectFormFieldName = 'generation_type';
 
     public static function getDefaultName(): ?string
     {
@@ -104,7 +104,7 @@ class GenerateLabelsAction extends BaseGenerationAction
 
     protected function generateDefaultLabels()
     {
-        $labels = [
+        $this->saveItems([
             [
                 'title' => 'Task',
                 'color' => '#0000ff', // blue
@@ -125,8 +125,6 @@ class GenerateLabelsAction extends BaseGenerationAction
                 'color' => '#ff0000', // red
                 'description' => 'A task is urgent and needs to be completed immediately.',
             ]
-        ];
-
-        $this->saveItems($labels);
+        ]);
     }
 }

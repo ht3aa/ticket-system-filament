@@ -15,9 +15,9 @@ enum GenerationRoleType: string
 
 class GenerateRolesAction extends BaseGenerationAction
 {
-    protected ?string $repeaterFieldName = 'roles';
+    protected ?string $repeaterFormFieldName = 'roles';
 
-    protected ?string $selectFieldName = 'generation_type';
+    protected ?string $selectFormFieldName = 'generation_type';
 
     public static function getDefaultName(): ?string
     {

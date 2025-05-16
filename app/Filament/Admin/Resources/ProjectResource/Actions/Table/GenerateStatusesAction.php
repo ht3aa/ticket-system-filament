@@ -14,9 +14,9 @@ enum GenerationStatusType: string
 
 class GenerateStatusesAction extends BaseGenerationAction
 {
-    protected ?string $repeaterFieldName = 'statuses';
+    protected ?string $repeaterFormFieldName = 'statuses';
 
-    protected ?string $selectFieldName = 'generation_type';
+    protected ?string $selectFormFieldName = 'generation_type';
 
     public static function getDefaultName(): ?string
     {

@@ -13,10 +13,9 @@ class BaseGenerationAction extends Action
 {
     protected Project $project;
 
-    protected ?string $repeaterFieldName = null;
+    protected ?string $repeaterFormFieldName = null;
 
-    protected ?string $selectFieldName = null;
-
+    protected ?string $selectFormFieldName = null;
 
     protected function setUp(): void
     {
@@ -29,15 +28,15 @@ class BaseGenerationAction extends Action
 
     protected function selectFormField(): Select
     {
-        return Select::make($this->selectFieldName)
+        return Select::make($this->selectFormFieldName)
             ->required()
             ->extraInputAttributes(function ($component) {
-                $repeaterStatePath = str($component->getStatePath())->before('.' . $component->getName()) . '.' . $this->repeaterFieldName;
+                $repeaterStatePath = str($component->getStatePath())->before('.' . $component->getName()) . '.' . $this->repeaterFormFieldName;
                 $selectStatePath = $component->getStatePath();
 
                 return [
                     'x-init' => "() => {
-                        const repeater = document.querySelector('[data-id=\"{$this->repeaterFieldName}-repeater\"]');
+                        const repeater = document.querySelector('[data-id=\"{$this->repeaterFormFieldName}-repeater\"]');
                         const form = repeater.closest('form');
                         const select = document.getElementById('{$selectStatePath}');
 
@@ -52,7 +51,7 @@ class BaseGenerationAction extends Action
                         }
                     }",
                     '@change' => "() => {
-                        const repeater = document.querySelector('[data-id=\"{$this->repeaterFieldName}-repeater\"]');
+                        const repeater = document.querySelector('[data-id=\"{$this->repeaterFormFieldName}-repeater\"]');
 
                         if (\$event.target.value === '" . GenerationLabelType::CUSTOM->value . "') {
                             repeater.style.display = 'block';
@@ -66,9 +65,9 @@ class BaseGenerationAction extends Action
 
     protected function repeaterFormField(): Repeater
     {
-        return Repeater::make($this->repeaterFieldName)
+        return Repeater::make($this->repeaterFormFieldName)
             ->extraFieldWrapperAttributes([
-                'data-id' => "{$this->repeaterFieldName}-repeater",
+                'data-id' => "{$this->repeaterFormFieldName}-repeater",
             ])
             ->reorderable(false)
             ->collapsible(true);
