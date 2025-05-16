@@ -2,23 +2,22 @@
 
 namespace App\Filament\Admin\Resources\ProjectResource\Actions\Table;
 
-use App\Models\Project;
-use Filament\Tables\Actions\Action;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Grid;
-use Filament\Resources\RelationManagers\RelationManager;
 use Illuminate\Support\HtmlString;
 
-enum GenerationType: string
+enum GenerationLabelType: string
 {
     case DEFAULT = 'default';
     case CUSTOM = 'custom';
 }
 
-class GenerateLabelsAction extends Action
+class GenerateLabelsAction extends BaseGenerationAction
 {
-    protected Project $project;
+    protected ?string $repeaterFieldName = 'labels';
+
+    protected ?string $selectFieldName = 'generation_type';
 
     public static function getDefaultName(): ?string
     {
@@ -31,18 +30,16 @@ class GenerateLabelsAction extends Action
 
         $this
             ->label('Generate Labels')
-            ->form($this->formSchema())
-            ->authorize(static fn(RelationManager $livewire): bool => (! $livewire->isReadOnly()))
             ->action(function ($data) {
-                if ($data['generation_type'] === GenerationType::DEFAULT->value) {
+                if ($data['generation_type'] === GenerationLabelType::DEFAULT->value) {
                     $this->generateDefaultLabels();
-                } else if ($data['generation_type'] === GenerationType::CUSTOM->value) {
+                } else if ($data['generation_type'] === GenerationLabelType::CUSTOM->value) {
                     $this->generateCustomLabels($data['labels']);
                 }
             });
     }
 
-    private function formSchema(): array
+    protected function formSchema(): array
     {
         return [
             $this->selectFormField(),
@@ -50,61 +47,23 @@ class GenerateLabelsAction extends Action
         ];
     }
 
-    private function selectFormField(): Select
+    protected function selectFormField(): Select
     {
-        return Select::make('generation_type')
-            ->native(false)
-            ->required()
+        return parent::selectFormField()
             ->options([
-                GenerationType::DEFAULT->value => 'Default (Task, Bug, Feature, Urgent)',
-                GenerationType::CUSTOM->value => 'Custom (Add your own labels)',
+                GenerationLabelType::DEFAULT->value => 'Default (Task, Bug, Feature, Urgent)',
+                GenerationLabelType::CUSTOM->value => 'Custom (Add your own labels)',
             ])
-            ->default(GenerationType::DEFAULT->value)
-            ->extraInputAttributes(function ($component) {
-                $repeaterStatePath = str($component->getStatePath())->before('.' . $component->getName()) . '.labels';
-                $selectStatePath = $component->getStatePath();
-
-                return [
-                    'x-init' => "() => {
-                        const repeater = document.querySelector('[data-id=\"labels-repeater\"]');
-                        const form = repeater.closest('form');
-                        const select = document.getElementById('{$selectStatePath}');
-
-                        form.addEventListener('submit', () => {
-                            if (select.value === '" . GenerationType::DEFAULT->value . "') {
-                                \$wire.set('{$repeaterStatePath}', null, false);
-                            }
-                        });
-
-                        if (repeater) {
-                            repeater.style.display = 'none';
-                        }
-                    }",
-                    '@change' => "() => {
-                        const repeater = document.querySelector('[data-id=\"labels-repeater\"]');
-
-                        if (\$event.target.value === '" . GenerationType::CUSTOM->value . "') {
-                            repeater.style.display = 'block';
-                        } else {
-                            repeater.style.display = 'none';
-                        }
-                    }"
-                ];
-            });
+            ->default(GenerationLabelType::DEFAULT->value);
     }
 
-    private function repeaterFormField(): Repeater
+    protected function repeaterFormField(): Repeater
     {
-        return Repeater::make('labels')
-            ->extraFieldWrapperAttributes([
-                'data-id' => 'labels-repeater',
-            ])
-            ->reorderable(false)
+        return parent::repeaterFormField()
             ->itemLabel(function ($state, $container) {
                 $id = $container->getStatePath();
                 return new HtmlString("<span class='font-bold p-2' style='background-color: {$state['color']}' id='{$id}'>{$state['title']}</span>");
             })
-            ->collapsible(true)
             ->schema(
                 function ($livewire) {
                     return [
@@ -142,13 +101,8 @@ class GenerateLabelsAction extends Action
     }
 
 
-    public function projectRecord(Project $project)
-    {
-        $this->project = $project;
-        return $this;
-    }
 
-    private function generateDefaultLabels()
+    protected function generateDefaultLabels()
     {
         $labels = [
             [
@@ -173,25 +127,16 @@ class GenerateLabelsAction extends Action
             ]
         ];
 
-        // Add project_id to each item
-        $labels = $this->addProjectIdToLabels($labels);
+        $labels = $this->addProjectIdToItems($labels);
 
         foreach ($labels as $label) {
             $this->getModel()::withTrashed()->firstOrCreate(['title' => $label['title'], 'project_id' => $this->project->id], $label);
         }
     }
 
-    private function addProjectIdToLabels($labels)
+    protected function generateCustomLabels($labels)
     {
-        return array_map(function ($item) {
-            $item['project_id'] = $this->project->id;
-            return $item;
-        }, $labels);
-    }
-
-    private function generateCustomLabels($labels)
-    {
-        $labels = $this->addProjectIdToLabels($labels);
+        $labels = $this->addProjectIdToItems($labels);
 
         foreach ($labels as $label) {
             $this->getModel()::create($label);

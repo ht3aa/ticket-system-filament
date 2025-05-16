@@ -13,15 +13,12 @@ class ProjectStatus extends Model
     protected $fillable = [
         'title',
         'description',
+        'project_id',
     ];
 
-    public function tickets()
-    {
-        return $this->hasMany(TicketInformation::class, 'status_id');
-    }
 
-    public function labels()
+    public function project()
     {
-        return $this->belongsToMany(ProjectLabel::class, 'project_labels_statuses', 'status_id', 'label_id');
+        return $this->belongsTo(Project::class);
     }
 }

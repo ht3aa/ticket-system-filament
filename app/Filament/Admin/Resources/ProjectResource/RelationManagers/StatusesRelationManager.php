@@ -2,6 +2,7 @@
 
 namespace App\Filament\Admin\Resources\ProjectResource\RelationManagers;
 
+use App\Filament\Admin\Resources\ProjectResource\Actions\Table\GenerateStatusesAction;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -14,13 +15,27 @@ class StatusesRelationManager extends RelationManager
 {
     protected static string $relationship = 'statuses';
 
+    public function titleField(): Forms\Components\TextInput
+    {
+        return Forms\Components\TextInput::make('title')
+            ->required()
+            ->unique(ignoreRecord: true, modifyRuleUsing: fn($rule) => $rule->where('project_id', $this->getOwnerRecord()->id))
+            ->columnSpanFull()
+            ->maxLength(255);
+    }
+
+    public function descriptionField(): Forms\Components\Textarea
+    {
+        return Forms\Components\Textarea::make('description')
+            ->columnSpanFull();
+    }
+
     public function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('title')
-                    ->required()
-                    ->maxLength(255),
+                $this->titleField(),
+                $this->descriptionField(),
             ]);
     }
 
@@ -30,12 +45,16 @@ class StatusesRelationManager extends RelationManager
             ->recordTitleAttribute('title')
             ->columns([
                 Tables\Columns\TextColumn::make('title'),
+                Tables\Columns\TextColumn::make('description'),
             ])
             ->filters([
-                //
+                Tables\Filters\TrashedFilter::make(),
             ])
             ->headerActions([
-                Tables\Actions\CreateAction::make(),
+                Tables\Actions\CreateAction::make()
+                    ->modalWidth('md'),
+                GenerateStatusesAction::make()
+                    ->projectRecord($this->getOwnerRecord()),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
