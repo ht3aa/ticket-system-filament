@@ -34,7 +34,7 @@ class GenerateLabelsAction extends BaseGenerationAction
                 if ($data['generation_type'] === GenerationLabelType::DEFAULT->value) {
                     $this->generateDefaultLabels();
                 } else if ($data['generation_type'] === GenerationLabelType::CUSTOM->value) {
-                    $this->generateCustomLabels($data['labels']);
+                    $this->saveItems($data['labels']);
                 }
             });
     }
@@ -127,19 +127,6 @@ class GenerateLabelsAction extends BaseGenerationAction
             ]
         ];
 
-        $labels = $this->addProjectIdToItems($labels);
-
-        foreach ($labels as $label) {
-            $this->getModel()::withTrashed()->firstOrCreate(['title' => $label['title'], 'project_id' => $this->project->id], $label);
-        }
-    }
-
-    protected function generateCustomLabels($labels)
-    {
-        $labels = $this->addProjectIdToItems($labels);
-
-        foreach ($labels as $label) {
-            $this->getModel()::create($label);
-        }
+        $this->saveItems($labels);
     }
 }

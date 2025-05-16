@@ -30,7 +30,6 @@ class BaseGenerationAction extends Action
     protected function selectFormField(): Select
     {
         return Select::make($this->selectFieldName)
-            ->native(false)
             ->required()
             ->extraInputAttributes(function ($component) {
                 $repeaterStatePath = str($component->getStatePath())->before('.' . $component->getName()) . '.' . $this->repeaterFieldName;
@@ -89,5 +88,14 @@ class BaseGenerationAction extends Action
         $this->project = $project;
 
         return $this;
+    }
+
+    protected function saveItems($items)
+    {
+        $items = $this->addProjectIdToItems($items);
+
+        foreach ($items as $item) {
+            $this->getModel()::withTrashed()->firstOrCreate(['title' => $item['title'], 'project_id' => $this->project->id], $item);
+        }
     }
 }

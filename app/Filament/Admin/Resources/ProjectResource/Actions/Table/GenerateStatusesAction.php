@@ -2,12 +2,8 @@
 
 namespace App\Filament\Admin\Resources\ProjectResource\Actions\Table;
 
-use App\Models\Project;
-use Filament\Tables\Actions\Action;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Repeater;
-use Filament\Forms\Components\Grid;
-use Filament\Resources\RelationManagers\RelationManager;
 use Illuminate\Support\HtmlString;
 
 enum GenerationStatusType: string
@@ -37,7 +33,7 @@ class GenerateStatusesAction extends BaseGenerationAction
                 if ($data['generation_type'] === GenerationStatusType::DEFAULT->value) {
                     $this->generateDefaultStatuses();
                 } else if ($data['generation_type'] === GenerationStatusType::CUSTOM->value) {
-                    $this->generateCustomStatuses($data['statuses']);
+                    $this->saveItems($data['statuses']);
                 }
             });
     }
@@ -54,7 +50,7 @@ class GenerateStatusesAction extends BaseGenerationAction
     {
         return parent::selectFormField()
             ->options([
-                GenerationStatusType::DEFAULT->value => 'Default (Task, Bug, Feature, Urgent)',
+                GenerationStatusType::DEFAULT->value => 'Default (To Do, In Progress, Done)',
                 GenerationStatusType::CUSTOM->value => 'Custom (Add your own statuses)',
             ])
             ->default(GenerationStatusType::DEFAULT->value);
@@ -93,38 +89,20 @@ class GenerateStatusesAction extends BaseGenerationAction
     {
         $statuses = [
             [
-                'title' => 'Task',
+                'title' => 'To Do',
                 'description' => 'A task is a unit of work that needs to be completed.',
             ],
             [
-                'title' => 'Bug',
-                'description' => 'A bug is an issue that needs to be fixed.',
+                'title' => 'In Progress',
+                'description' => 'A task is in progress.',
             ],
             [
-                'title' => 'Feature',
-                'description' => 'A feature is a new or improved functionality that needs to be added.',
+                'title' => 'Done',
+                'description' => 'A task is done.',
             ],
-            [
-                'title' => 'Urgent',
-                'description' => 'A task is urgent and needs to be completed immediately.',
-            ]
+
         ];
 
-        $statuses = $this->addProjectIdToItems($statuses);
-
-        foreach ($statuses as $status) {
-            $this->getModel()::withTrashed()->firstOrCreate(['title' => $status['title'], 'project_id' => $this->project->id], $status);
-        }
-    }
-
-
-
-    protected function generateCustomStatuses($statuses)
-    {
-        $statuses = $this->addProjectIdToItems($statuses);
-
-        foreach ($statuses as $status) {
-            $this->getModel()::create($status);
-        }
+        $this->saveItems($statuses);
     }
 }

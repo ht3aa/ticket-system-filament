@@ -22,8 +22,8 @@ class ProjectMemberFactory extends Factory
     {
         return [
             'project_id' => Project::factory(),
-            'member_id' => User::factory(),
-            'role_id' => ProjectRole::factory(),
+            'project_member_id' => User::factory(),
+            'project_role_id' => ProjectRole::factory(),
         ];
     }
 }

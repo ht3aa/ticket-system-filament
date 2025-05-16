@@ -11,22 +11,28 @@ class ProjectMember extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'member_id',
-        'role_id',
+        'project_member_id',
+        'project_role_id',
+        'project_id',
     ];
 
-    public function user()
+    public function projectMember()
     {
-        return $this->belongsTo(User::class, 'member_id');
+        return $this->belongsTo(User::class, 'project_member_id');
     }
 
-    public function role()
+    public function projectRole()
     {
-        return $this->belongsTo(ProjectRole::class, 'role_id');
+        return $this->belongsTo(ProjectRole::class);
     }
 
     public function ticketStaff()
     {
-        return $this->hasMany(TicketStaff::class, 'member_id');
+        return $this->hasMany(TicketStaff::class, 'project_member_id');
+    }
+
+    public function project()
+    {
+        return $this->belongsTo(Project::class);
     }
 }
