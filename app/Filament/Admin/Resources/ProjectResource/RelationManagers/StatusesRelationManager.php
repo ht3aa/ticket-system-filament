@@ -3,6 +3,7 @@
 namespace App\Filament\Admin\Resources\ProjectResource\RelationManagers;
 
 use App\Filament\Admin\Resources\ProjectResource\Actions\Table\GenerateStatusesAction;
+use App\Filament\Admin\Resources\ProjectResource\Actions\Table\HasChildrenAction;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -43,6 +44,7 @@ class StatusesRelationManager extends RelationManager
     {
         return $table
             ->recordTitleAttribute('title')
+            ->modifyQueryUsing(fn($query) => $query->withExists('tickets'))
             ->columns([
                 Tables\Columns\TextColumn::make('title'),
                 Tables\Columns\TextColumn::make('description'),
@@ -61,6 +63,12 @@ class StatusesRelationManager extends RelationManager
                 Tables\Actions\DeleteAction::make(),
                 Tables\Actions\RestoreAction::make(),
                 Tables\Actions\ForceDeleteAction::make(),
+                HasChildrenAction::make()
+                    ->tooltip(function ($record) {
+                        $ticketsCount = $record->tickets_exists;
+
+                        return __('system.has_children') . " ({$ticketsCount} tickets)";
+                    }),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

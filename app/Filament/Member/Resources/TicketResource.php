@@ -91,6 +91,10 @@ class TicketResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('projectLabel.title')
                     ->numeric()
+                    ->label('Label')
+                    ->extraCellAttributes(fn($record) => [
+                        'style' => "border-bottom: 3px solid {$record->projectLabel->color};",
+                    ])
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()

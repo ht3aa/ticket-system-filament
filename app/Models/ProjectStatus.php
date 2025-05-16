@@ -26,4 +26,9 @@ class ProjectStatus extends Model
     {
         return $this->hasMany(Ticket::class);
     }
+
+    public function hasChildren(): bool
+    {
+        return $this->tickets_exists;
+    }
 }

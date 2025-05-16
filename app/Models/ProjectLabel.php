@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class ProjectLabel extends Model
 {
@@ -25,5 +26,10 @@ class ProjectLabel extends Model
     public function tickets()
     {
         return $this->hasMany(Ticket::class);
+    }
+
+    public function hasChildren(): bool
+    {
+        return $this->tickets_exists;
     }
 }
