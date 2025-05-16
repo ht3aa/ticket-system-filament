@@ -76,7 +76,6 @@ class GenerateLabels extends Action
 
                         if (repeater) {
                             repeater.style.display = 'none';
-
                         }
                     }",
                     '@change' => "() => {
