@@ -2,14 +2,12 @@
 
 namespace App\Filament\Admin\Resources\ProjectResource\RelationManagers;
 
-use App\Filament\Admin\Resources\ProjectResource\Actions\Table\GenerateLabels;
+use App\Filament\Admin\Resources\ProjectResource\Actions\Table\GenerateLabelsAction;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class LabelsRelationManager extends RelationManager
 {
@@ -20,7 +18,7 @@ class LabelsRelationManager extends RelationManager
     {
         return Forms\Components\TextInput::make('title')
             ->required()
-            ->unique()
+            ->unique(ignoreRecord: true, modifyRuleUsing: fn($rule) => $rule->where('project_id', $this->getOwnerRecord()->id))
             ->maxLength(255);
     }
 
@@ -63,7 +61,7 @@ class LabelsRelationManager extends RelationManager
             ])
             ->headerActions([
                 Tables\Actions\CreateAction::make(),
-                GenerateLabels::make()
+                GenerateLabelsAction::make()
                     ->projectRecord($this->getOwnerRecord()),
             ])
             ->actions([

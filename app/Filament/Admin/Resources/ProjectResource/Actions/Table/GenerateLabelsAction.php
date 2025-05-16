@@ -7,6 +7,7 @@ use Filament\Tables\Actions\Action;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Grid;
+use Filament\Resources\RelationManagers\RelationManager;
 use Illuminate\Support\HtmlString;
 
 enum GenerationType: string
@@ -15,7 +16,7 @@ enum GenerationType: string
     case CUSTOM = 'custom';
 }
 
-class GenerateLabels extends Action
+class GenerateLabelsAction extends Action
 {
     protected Project $project;
 
@@ -31,6 +32,7 @@ class GenerateLabels extends Action
         $this
             ->label('Generate Labels')
             ->form($this->formSchema())
+            ->authorize(static fn(RelationManager $livewire): bool => (! $livewire->isReadOnly()))
             ->action(function ($data) {
                 if ($data['generation_type'] === GenerationType::DEFAULT->value) {
                     $this->generateDefaultLabels();
