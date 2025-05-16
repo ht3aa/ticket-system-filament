@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('project_labels', function (Blueprint $table) {
             $table->id();
-            $table->string('title', 255)->unique('title', 'project_id');
+            $table->string('title', 255);
             $table->text('description')->nullable();
             $table->string('color', 255);
             $table->foreignId('project_id')->constrained('projects')->cascadeOnDelete();
