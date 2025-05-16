@@ -10,7 +10,8 @@
         "awcodes/filament-tiptap-editor": "^3.5",
         "filament/filament": "^3.2",
         "laravel/framework": "^12.0",
-        "laravel/tinker": "^2.10.1"
+        "laravel/tinker": "^2.10.1",
+        "parallax/filament-comments": "^1.5"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.15",
