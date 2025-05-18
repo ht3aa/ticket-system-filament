@@ -16,6 +16,13 @@ class ProjectPermission extends Model
         'project_id',
     ];
 
+    protected $hidden = [
+        'id',
+        'created_at',
+        'updated_at',
+        'deleted_at',
+    ];
+
     public function project()
     {
         return $this->belongsTo(Project::class);

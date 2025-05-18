@@ -16,6 +16,14 @@ class Project extends Model
         'description',
     ];
 
+    protected $hidden = [
+        'id',
+        'created_at',
+        'updated_at',
+        'deleted_at',
+    ];
+
+
     public function roles()
     {
         return $this->hasMany(ProjectRole::class);

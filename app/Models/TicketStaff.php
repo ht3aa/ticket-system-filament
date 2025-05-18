@@ -17,6 +17,13 @@ class TicketStaff extends Model
         'type',
     ];
 
+    protected $hidden = [
+        'id',
+        'created_at',
+        'updated_at',
+        'deleted_at',
+    ];
+
     /**
      * Get the ticket associated with this staff member.
      */

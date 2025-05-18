@@ -24,6 +24,13 @@ class Ticket extends Model
         'project_label_id',
     ];
 
+    protected $hidden = [
+        'id',
+        'created_at',
+        'updated_at',
+        'deleted_at',
+    ];
+
     public function parent()
     {
         return $this->belongsTo(Ticket::class);
