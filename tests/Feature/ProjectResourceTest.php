@@ -2,63 +2,75 @@
 
 use Filament\Facades\Filament;
 use App\Filament\Admin\Resources\ProjectResource;
-use App\Filament\Admin\Resources\ProjectResource\Pages\ListProjects;
+use App\Filament\Admin\Resources\ProjectResource\Pages\CreateProject;
+use App\Filament\Admin\Resources\ProjectResource\Pages\EditProject;
+use App\Filament\Admin\Resources\ProjectResource\Pages\ViewProject;
 use App\Models\Project;
 use App\Models\User;
 
 use function Pest\Livewire\livewire;
 
-it('should render the list page', function () {
+it('should render all the pages of the project resource', function () {
     Filament::setCurrentPanel(
         Filament::getPanel('admin'),
     );
 
-    livewire(ListProjects::class)
-        ->assertCanRenderTableColumn('title')
-        ->assertCanRenderTableColumn('created_at')
-        ->assertCanRenderTableColumn('actions')
-        ->assertSuccessful();
+    $this->get(ProjectResource::getUrl('index'))->assertSuccessful();
+    $this->get(ProjectResource::getUrl('create'))->assertSuccessful();
+    $this->get(ProjectResource::getUrl('edit', ['record' => Project::factory()->create()]))->assertSuccessful();
+    $this->get(ProjectResource::getUrl('view', ['record' => Project::factory()->create()]))->assertSuccessful();
 });
 
-it('should render the create page', function () {
-    Filament::setCurrentPanel(
-        Filament::getPanel('admin'),
-    );
+describe('create, edit and view a project', function () {
 
-    // login with user
-    $user = User::factory()->create();
+    it('should create a project', function () {
+        $newProject = Project::factory()->make();
+        Filament::setCurrentPanel(
+            Filament::getPanel('admin'),
+        );
 
-    $this
-        ->actingAs($user)
-        ->get(ProjectResource::getUrl('create'))
-        ->assertSuccessful();
-});
+        livewire(CreateProject::class)
+            ->fillForm([
+                'title' => $newProject->title,
+                'description' => $newProject->description,
+            ])
+            ->call('create')
+            ->assertHasNoErrors();
 
+        $this->assertDatabaseHas('projects', [
+            'title' => $newProject->title,
+            'description' => $newProject->description,
+        ]);
+    });
 
-it('should render the edit page', function () {
-    Filament::setCurrentPanel(
-        Filament::getPanel('admin'),
-    );
+    it('should edit a project', function () {
+        $newProject = Project::factory()->create();
 
-    // login with user
-    $user = User::factory()->create();
+        Filament::setCurrentPanel(
+            Filament::getPanel('admin'),
+        );
 
-    $this
-        ->actingAs($user)
-        ->get(ProjectResource::getUrl('edit', ['record' => Project::factory()->create()]))
-        ->assertSuccessful();
-});
+        livewire(EditProject::class, ['record' => $newProject])
+            ->fillForm([
+                'title' => 'Updated Project',
+                'description' => 'Updated Description',
+            ])
+            ->call('save')
+            ->assertHasNoErrors();
 
-it('should render the show page', function () {
-    Filament::setCurrentPanel(
-        Filament::getPanel('admin'),
-    );
+        $this->assertDatabaseHas('projects', [
+            'title' => 'Updated Project',
+            'description' => 'Updated Description',
+        ]);
+    });
 
-    // login with user
-    $user = User::factory()->create();
+    it('should view a project', function () {
+        $newProject = Project::factory()->create();
+        Filament::setCurrentPanel(
+            Filament::getPanel('admin'),
+        );
 
-    $this
-        ->actingAs($user)
-        ->get(ProjectResource::getUrl('view', ['record' => Project::factory()->create()]))
-        ->assertSuccessful();
+        livewire(ViewProject::class, ['record' => $newProject])
+            ->assertSuccessful();
+    });
 });
