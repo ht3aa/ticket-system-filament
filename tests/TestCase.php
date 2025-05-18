@@ -4,7 +4,7 @@ namespace Tests;
 
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use App\Models\User;
-
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 abstract class TestCase extends BaseTestCase
 {
@@ -12,12 +12,7 @@ abstract class TestCase extends BaseTestCase
     {
         parent::setUp();
 
-        // change database to test
-        config(['database.default' => 'testSqlite']);
-
-        // run migration with seed
-        $this->artisan('migrate:fresh --seed');
-
+        // Create test user
         $user = User::factory()->createOne()->first();
 
         $this->actingAs($user);
