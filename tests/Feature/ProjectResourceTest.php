@@ -8,8 +8,11 @@ use App\Filament\Admin\Resources\ProjectResource\Pages\ListProjects;
 use App\Filament\Admin\Resources\ProjectResource\Pages\ViewProject;
 use App\Models\Project;
 use Filament\Actions\DeleteAction;
+use Filament\Actions\EditAction;
 use Filament\Actions\ForceDeleteAction;
 use Filament\Actions\RestoreAction;
+use Filament\Actions\ViewAction;
+use Filament\Tables\Table;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 use function Pest\Livewire\livewire;
@@ -166,9 +169,7 @@ describe('project deleting actions', function () {
             ->assertHasNoFormErrors()
             ->assertHasNoErrors();
 
-        $this->assertDatabaseMissing(Project::class, [
-            'id' => $project->id,
-        ]);
+        $this->assertDatabaseMissing(Project::class, $project->toArray());
     });
 });
 
@@ -231,5 +232,72 @@ describe('project list page', function () {
             ->filterTable('trashed', false)
             ->assertCanNotSeeTableRecords($projects)
             ->assertCanSeeTableRecords($trashedProjects);
+    });
+
+    it('should delete a record when the delete action is used', function () {
+        $project = Project::factory()->create();
+
+        livewire(ListProjects::class)
+            ->callTableAction(DeleteAction::class, $project);
+
+        $this->assertSoftDeleted($project);
+    });
+
+    it('should restore a record when the restore action is used', function () {
+        $project = Project::factory()->create();
+
+        $project->delete();
+
+        livewire(ListProjects::class)
+            ->filterTable('trashed', true)
+            ->callTableAction(RestoreAction::class, $project);
+
+        $this->assertNotSoftDeleted($project);
+    });
+
+    it('should force delete a record when the force delete action is used', function () {
+        $project = Project::factory()->create();
+
+        $project->delete();
+
+        livewire(ListProjects::class)
+            ->filterTable('trashed', true)
+            ->callTableAction(ForceDeleteAction::class, $project);
+
+        $this->assertDatabaseMissing(Project::class, $project->toArray());
+    });
+
+    it('should search for a project', function () {
+        $projects = Project::factory()->count(4)->create();
+
+        $project = $projects->first();
+
+        livewire(ListProjects::class)
+            ->searchTable($project->title)
+            ->assertCanSeeTableRecords($projects->where('title', $project->title))
+            ->assertCanNotSeeTableRecords($projects->where('title', '!=', $project->title));
+    });
+
+    it('should have pagination of 10, 20, 50, 100', function () {
+
+        livewire(ListProjects::class)
+            ->call('getTable')
+            ->assertSeeHtml('
+                    <option value="5">
+                        5
+                    </option>
+                    <option value="10">
+                        10
+                    </option>
+                    <option value="25">
+                        25
+                    </option>
+                    <option value="50">
+                        50
+                    </option>
+                    <option value="all">
+                        All
+                    </option>
+        ');
     });
 });
