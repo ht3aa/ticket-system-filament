@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Filament\Forms\Components\Select;
+use Filament\Tables\Table;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -25,6 +26,10 @@ class AppServiceProvider extends ServiceProvider
                 ->native(false)
                 ->preload()
                 ->searchable();
+        });
+
+        Table::configureUsing(function (Table $table) {
+            $table->paginationPageOptions([10, 20, 50, 100]);
         });
     }
 }
