@@ -37,6 +37,6 @@ class ProjectLabel extends Model
 
     public function hasChildren(): bool
     {
-        return $this->tickets_exists;
+        return $this->tickets_exists > 0;
     }
 }

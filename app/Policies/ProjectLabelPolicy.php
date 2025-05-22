@@ -45,11 +45,7 @@ class ProjectLabelPolicy
      */
     public function delete(User $user, ProjectLabel $projectLabel): bool
     {
-        if ($projectLabel->hasChildren()) {
-            return false;
-        }
-
-        return true;
+        return ! $projectLabel->hasChildren();
     }
 
     /**
