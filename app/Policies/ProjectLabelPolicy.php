@@ -62,4 +62,9 @@ class ProjectLabelPolicy
     {
         return true;
     }
+
+    public function hasChildren(User $user, ProjectLabel $projectLabel): bool
+    {
+        return $projectLabel->hasChildren();
+    }
 }

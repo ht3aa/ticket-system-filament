@@ -19,6 +19,6 @@ class HasChildrenAction extends Action
             ->label('Has Children')
             ->color('danger')
             ->icon('heroicon-o-exclamation-triangle')
-            ->authorize(fn ($record) => ! auth()->user()->can('delete', $record));
+            ->authorize('hasChildren');
     }
 }

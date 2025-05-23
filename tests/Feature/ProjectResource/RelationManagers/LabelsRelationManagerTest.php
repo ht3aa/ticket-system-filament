@@ -1,6 +1,7 @@
 <?php
 
 use App\Filament\Admin\Resources\ProjectResource;
+use App\Filament\Admin\Resources\ProjectResource\Actions\Table\HasChildrenAction;
 use App\Filament\Admin\Resources\ProjectResource\Pages\EditProject;
 use App\Models\Project;
 use App\Models\ProjectLabel;
@@ -168,22 +169,34 @@ it('should delete a project label', function () {
     $this->assertSoftDeleted($label);
 });
 
-// TODO: fix this test
-// it('should not allow deletion of label with children', function () {
-//     $project = Project::factory()->create();
-//     $label = ProjectLabel::factory()->create([
-//         'project_id' => $project->id,
-//     ]);
+it('should show has children action when label has tickets', function () {
+    $project = Project::factory()->create();
+    $label = ProjectLabel::factory()->create([
+        'project_id' => $project->id,
+    ]);
 
-//     // create a ticket with the label
-//     Ticket::factory()->create([
-//         'project_id' => $project->id,
-//         'project_label_id' => $label->id,
-//     ]);
+    Ticket::factory()->create([
+        'project_id' => $project->id,
+        'project_label_id' => $label->id,
+    ]);
 
-//     livewire(ProjectResource\RelationManagers\LabelsRelationManager::class, [
-//         'ownerRecord' => $project,
-//         'pageClass' => EditProject::class,
-//     ])
-//         ->assertTableActionExists(DeleteAction::class);
-// });
+    livewire(ProjectResource\RelationManagers\LabelsRelationManager::class, [
+        'ownerRecord' => $project,
+        'pageClass' => EditProject::class,
+    ])
+        ->assertTableActionVisible(HasChildrenAction::class, $label);
+});
+
+it('should not show has children action when label has no tickets', function () {
+    $project = Project::factory()->create();
+    $label = ProjectLabel::factory()->create([
+        'project_id' => $project->id,
+    ]);
+
+    livewire(ProjectResource\RelationManagers\LabelsRelationManager::class, [
+        'ownerRecord' => $project,
+        'pageClass' => EditProject::class,
+    ])
+        ->loadTable()
+        ->assertTableActionNotVisible('has-children', $label);
+});
