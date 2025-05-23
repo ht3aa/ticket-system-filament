@@ -15,7 +15,6 @@ return [
         'empty' => 'heroicon-s-chat-bubble-left-right',
     ],
 
-
     /*
      * The comment model to be used
      */
@@ -32,7 +31,6 @@ return [
      * Set to null if no comments should be deleted.
      */
     'prune_after_days' => 30,
-
 
     /*
      * Options: 'rich', 'markdown'
@@ -65,7 +63,6 @@ return [
      * Authenticatable model class
      */
     'authenticatable' => \App\Models\User::class,
-
 
     /*
      * The name of the table where the comments are stored.

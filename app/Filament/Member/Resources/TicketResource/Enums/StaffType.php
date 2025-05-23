@@ -2,11 +2,11 @@
 
 namespace App\Filament\Member\Resources\TicketResource\Enums;
 
-use Filament\Support\Contracts\HasLabel;
 use Filament\Support\Contracts\HasColor;
 use Filament\Support\Contracts\HasIcon;
+use Filament\Support\Contracts\HasLabel;
 
-enum StaffType: string implements HasLabel, HasColor, HasIcon
+enum StaffType: string implements HasColor, HasIcon, HasLabel
 {
     case ASSIGNEE = 'assignee';
     case ACCOUNTABLE = 'accountable';

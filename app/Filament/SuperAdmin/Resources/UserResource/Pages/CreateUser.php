@@ -3,7 +3,6 @@
 namespace App\Filament\SuperAdmin\Resources\UserResource\Pages;
 
 use App\Filament\SuperAdmin\Resources\UserResource;
-use Filament\Actions;
 use Filament\Resources\Pages\CreateRecord;
 
 class CreateUser extends CreateRecord

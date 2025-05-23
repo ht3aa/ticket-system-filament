@@ -17,7 +17,7 @@ class RolesRelationManager extends RelationManager
     {
         return TextInput::make('title')
             ->required()
-            ->unique(ignoreRecord: true, modifyRuleUsing: fn($rule) => $rule->where('project_id', $this->getOwnerRecord()->id))
+            ->unique(ignoreRecord: true, modifyRuleUsing: fn ($rule) => $rule->where('project_id', $this->getOwnerRecord()->id))
             ->maxLength(255);
     }
 

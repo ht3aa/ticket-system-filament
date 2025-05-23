@@ -40,10 +40,9 @@ class TicketResource extends Resource
                 Section::make('Ticket Information')
                     ->schema([
                         Forms\Components\TextInput::make('code')
-                            ->default(fn() => 'TICKET-' . str_pad(Ticket::count() + 1, 4, '0', STR_PAD_LEFT))
+                            ->default(fn () => 'TICKET-'.str_pad(Ticket::count() + 1, 4, '0', STR_PAD_LEFT))
                             ->readOnly()
                             ->required(),
-
 
                         Forms\Components\Select::make('project_id')
                             ->options(Project::all()->pluck('title', 'id'))
@@ -56,11 +55,11 @@ class TicketResource extends Resource
                             ->required(),
 
                         Forms\Components\Select::make('project_status_id')
-                            ->options(fn($get) => ProjectStatus::where('project_id', $get('project_id'))->pluck('title', 'id'))
+                            ->options(fn ($get) => ProjectStatus::where('project_id', $get('project_id'))->pluck('title', 'id'))
                             ->required(),
 
                         Forms\Components\Select::make('project_label_id')
-                            ->options(fn($get) => ProjectLabel::where('project_id', $get('project_id'))->pluck('title', 'id'))
+                            ->options(fn ($get) => ProjectLabel::where('project_id', $get('project_id'))->pluck('title', 'id'))
                             ->required(),
 
                         Forms\Components\Select::make('parent_id')
@@ -92,7 +91,7 @@ class TicketResource extends Resource
                 Tables\Columns\TextColumn::make('projectLabel.title')
                     ->numeric()
                     ->label('Label')
-                    ->extraCellAttributes(fn($record) => [
+                    ->extraCellAttributes(fn ($record) => [
                         'style' => "border-bottom: 3px solid {$record->projectLabel->color};",
                     ])
                     ->sortable(),

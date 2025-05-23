@@ -3,8 +3,8 @@
 namespace App\Filament\Admin\Resources\ProjectResource\Actions\Table;
 
 use Filament\Forms\Components\Grid;
-use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\Select;
 use Illuminate\Support\HtmlString;
 
 enum GenerationRoleType: string
@@ -33,7 +33,7 @@ class GenerateRolesAction extends BaseGenerationAction
             ->action(function ($data) {
                 if ($data['generation_type'] === GenerationRoleType::DEFAULT->value) {
                     $this->generateDefaultRoles();
-                } else if ($data['generation_type'] === GenerationRoleType::CUSTOM->value) {
+                } elseif ($data['generation_type'] === GenerationRoleType::CUSTOM->value) {
                     $this->saveItems($data['roles']);
                 }
             });
@@ -62,6 +62,7 @@ class GenerateRolesAction extends BaseGenerationAction
         return parent::repeaterFormField()
             ->itemLabel(function ($state, $container) {
                 $id = $container->getStatePath();
+
                 return new HtmlString("<span class='font-bold p-2' id='{$id}'>{$state['title']}</span>");
             })
             ->schema(
@@ -77,7 +78,7 @@ class GenerateRolesAction extends BaseGenerationAction
                                             '@keyup' => "() => {
                                                     let itemStatusElement = document.getElementById('{$itemComponentStatePath}');
                                                     itemStatusElement.innerHTML = \$event.target.value;
-                                                }"
+                                                }",
                                         ];
                                     }),
 
@@ -87,7 +88,6 @@ class GenerateRolesAction extends BaseGenerationAction
                 }
             );
     }
-
 
     protected function generateDefaultRoles()
     {

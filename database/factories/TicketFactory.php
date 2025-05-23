@@ -5,7 +5,6 @@ namespace Database\Factories;
 use App\Models\Project;
 use App\Models\ProjectLabel;
 use App\Models\ProjectStatus;
-use App\Models\Ticket;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**

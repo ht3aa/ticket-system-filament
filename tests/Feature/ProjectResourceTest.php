@@ -1,18 +1,14 @@
 <?php
 
-use Filament\Facades\Filament;
 use App\Filament\Admin\Resources\ProjectResource;
 use App\Filament\Admin\Resources\ProjectResource\Pages\CreateProject;
 use App\Filament\Admin\Resources\ProjectResource\Pages\EditProject;
-use App\Filament\Admin\Resources\ProjectResource\Pages\ListProjects;
 use App\Filament\Admin\Resources\ProjectResource\Pages\ViewProject;
 use App\Models\Project;
 use Filament\Actions\DeleteAction;
-use Filament\Actions\EditAction;
 use Filament\Actions\ForceDeleteAction;
 use Filament\Actions\RestoreAction;
-use Filament\Actions\ViewAction;
-use Filament\Tables\Table;
+use Filament\Facades\Filament;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 use function Pest\Livewire\livewire;
@@ -24,7 +20,6 @@ beforeEach(function () {
         Filament::getPanel('admin'),
     );
 });
-
 
 describe('project create page', function () {
     it('should render the create page', function () {
@@ -132,7 +127,6 @@ describe('project edit page', function () {
             ->assertHasNoErrors();
     });
 });
-
 
 describe('project deleting actions', function () {
     it('should soft delete a project', function () {

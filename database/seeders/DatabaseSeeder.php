@@ -31,7 +31,7 @@ class DatabaseSeeder extends Seeder
         // Create projects with their related data
         \App\Models\Project::factory(5)
             ->has(\App\Models\ProjectRole::factory(3), 'roles')
-            ->has(\App\Models\ProjectMember::factory(5)->state(fn(array $attributes, $project) => ['project_id' => $project]), 'members')
+            ->has(\App\Models\ProjectMember::factory(5)->state(fn (array $attributes, $project) => ['project_id' => $project]), 'members')
             ->has(\App\Models\ProjectStatus::factory(4), 'statuses')
             ->create()
             ->each(function ($project) {
@@ -39,7 +39,7 @@ class DatabaseSeeder extends Seeder
                 $labelTypes = ['Bug', 'Feature', 'Enhancement', 'Documentation', 'Urgent'];
                 foreach ($labelTypes as $index => $type) {
                     \App\Models\ProjectLabel::factory()->create([
-                        'title' => $type . ' ' . ($project->id * 100 + $index + 1),
+                        'title' => $type.' '.($project->id * 100 + $index + 1),
                         'project_id' => $project->id,
                     ]);
                 }

@@ -1,16 +1,14 @@
 <?php
 
 use App\Filament\Admin\Resources\ProjectResource;
-use App\Filament\Admin\Resources\ProjectResource\Actions\Table\HasChildrenAction;
 use App\Filament\Admin\Resources\ProjectResource\Pages\EditProject;
 use App\Models\Project;
 use App\Models\ProjectLabel;
 use App\Models\Ticket;
 use Filament\Actions\CreateAction;
-use Filament\Actions\EditAction;
 use Filament\Actions\DeleteAction;
+use Filament\Actions\EditAction;
 use Filament\Facades\Filament;
-use Filament\Tables\Actions\DeleteAction as ActionsDeleteAction;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 use function Pest\Livewire\livewire;

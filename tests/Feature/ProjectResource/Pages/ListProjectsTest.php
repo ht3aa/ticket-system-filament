@@ -2,7 +2,6 @@
 
 use App\Filament\Admin\Resources\ProjectResource;
 use App\Filament\Admin\Resources\ProjectResource\Pages\ListProjects;
-use App\Filament\Admin\Resources\ProjectResource\Pages\ViewProject;
 use App\Models\Project;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\ForceDeleteAction;
@@ -19,7 +18,6 @@ beforeEach(function () {
         Filament::getPanel('admin'),
     );
 });
-
 
 it('should render the list page', function () {
     $this->get(ProjectResource::getUrl('index'))->assertSuccessful();

@@ -9,8 +9,6 @@ use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class StatusesRelationManager extends RelationManager
 {
@@ -20,7 +18,7 @@ class StatusesRelationManager extends RelationManager
     {
         return Forms\Components\TextInput::make('title')
             ->required()
-            ->unique(ignoreRecord: true, modifyRuleUsing: fn($rule) => $rule->where('project_id', $this->getOwnerRecord()->id))
+            ->unique(ignoreRecord: true, modifyRuleUsing: fn ($rule) => $rule->where('project_id', $this->getOwnerRecord()->id))
             ->columnSpanFull()
             ->maxLength(255);
     }
@@ -44,7 +42,7 @@ class StatusesRelationManager extends RelationManager
     {
         return $table
             ->recordTitleAttribute('title')
-            ->modifyQueryUsing(fn($query) => $query->withExists('tickets'))
+            ->modifyQueryUsing(fn ($query) => $query->withExists('tickets'))
             ->columns([
                 Tables\Columns\TextColumn::make('title'),
                 Tables\Columns\TextColumn::make('description'),
@@ -67,7 +65,7 @@ class StatusesRelationManager extends RelationManager
                     ->tooltip(function ($record) {
                         $ticketsCount = $record->tickets_exists;
 
-                        return __('system.has_children') . " ({$ticketsCount} tickets)";
+                        return __('system.has_children')." ({$ticketsCount} tickets)";
                     }),
             ])
             ->bulkActions([

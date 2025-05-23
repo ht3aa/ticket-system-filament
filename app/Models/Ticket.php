@@ -12,7 +12,7 @@ use Parallax\FilamentComments\Models\Traits\HasFilamentComments;
 #[ScopedBy(TicketScope::class)]
 class Ticket extends Model
 {
-    use HasFactory, SoftDeletes, HasFilamentComments;
+    use HasFactory, HasFilamentComments, SoftDeletes;
 
     protected $fillable = [
         'title',

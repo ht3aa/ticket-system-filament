@@ -14,12 +14,11 @@ class LabelsRelationManager extends RelationManager
 {
     protected static string $relationship = 'labels';
 
-
     public function titleField(): Forms\Components\TextInput
     {
         return Forms\Components\TextInput::make('title')
             ->required()
-            ->unique(ignoreRecord: true, modifyRuleUsing: fn($rule) => $rule->where('project_id', $this->getOwnerRecord()->id))
+            ->unique(ignoreRecord: true, modifyRuleUsing: fn ($rule) => $rule->where('project_id', $this->getOwnerRecord()->id))
             ->maxLength(255);
     }
 
@@ -52,7 +51,7 @@ class LabelsRelationManager extends RelationManager
     {
         return $table
             ->recordTitleAttribute('title')
-            ->modifyQueryUsing(fn($query) => $query->withExists('tickets'))
+            ->modifyQueryUsing(fn ($query) => $query->withExists('tickets'))
             ->columns([
                 Tables\Columns\TextColumn::make('title'),
                 Tables\Columns\ColorColumn::make('color'),
@@ -75,7 +74,7 @@ class LabelsRelationManager extends RelationManager
                     ->tooltip(function ($record) {
                         $ticketsCount = $record->tickets_exists;
 
-                        return __('system.has_children') . " ({$ticketsCount} tickets)";
+                        return __('system.has_children')." ({$ticketsCount} tickets)";
                     }),
             ])
             ->bulkActions([

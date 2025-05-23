@@ -1,9 +1,9 @@
 <?php
 
+use App\Filament\Member\Resources\TicketResource\Enums\StaffType;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use App\Filament\Member\Resources\TicketResource\Enums\StaffType;
 
 return new class extends Migration
 {

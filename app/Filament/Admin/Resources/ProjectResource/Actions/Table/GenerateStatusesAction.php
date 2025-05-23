@@ -2,8 +2,8 @@
 
 namespace App\Filament\Admin\Resources\ProjectResource\Actions\Table;
 
-use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\Select;
 use Illuminate\Support\HtmlString;
 
 enum GenerationStatusType: string
@@ -32,7 +32,7 @@ class GenerateStatusesAction extends BaseGenerationAction
             ->action(function ($data) {
                 if ($data['generation_type'] === GenerationStatusType::DEFAULT->value) {
                     $this->generateDefaultStatuses();
-                } else if ($data['generation_type'] === GenerationStatusType::CUSTOM->value) {
+                } elseif ($data['generation_type'] === GenerationStatusType::CUSTOM->value) {
                     $this->saveItems($data['statuses']);
                 }
             });
@@ -61,6 +61,7 @@ class GenerateStatusesAction extends BaseGenerationAction
         return parent::repeaterFormField()
             ->itemLabel(function ($state, $container) {
                 $id = $container->getStatePath();
+
                 return new HtmlString("<span class='font-bold p-2' id='{$id}'>{$state['title']}</span>");
             })
             ->schema(
@@ -74,7 +75,7 @@ class GenerateStatusesAction extends BaseGenerationAction
                                     '@keyup' => "() => {
                                                 let itemStatusElement = document.getElementById('{$itemComponentStatePath}');
                                                 itemStatusElement.innerHTML = \$event.target.value;
-                                            }"
+                                            }",
                                 ];
                             }),
 
@@ -83,7 +84,6 @@ class GenerateStatusesAction extends BaseGenerationAction
                 }
             );
     }
-
 
     protected function generateDefaultStatuses()
     {

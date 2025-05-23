@@ -5,9 +5,8 @@ namespace App\Filament\Admin\Resources\ProjectResource\Actions\Table;
 use App\Models\Project;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
-use Filament\Tables\Actions\Action;
 use Filament\Resources\RelationManagers\RelationManager;
-
+use Filament\Tables\Actions\Action;
 
 class BaseGenerationAction extends Action
 {
@@ -23,7 +22,7 @@ class BaseGenerationAction extends Action
 
         $this
             ->form($this->formSchema())
-            ->authorize(static fn(RelationManager $livewire): bool => (! $livewire->isReadOnly()));
+            ->authorize(static fn (RelationManager $livewire): bool => (! $livewire->isReadOnly()));
     }
 
     protected function selectFormField(): Select
@@ -31,7 +30,7 @@ class BaseGenerationAction extends Action
         return Select::make($this->selectFormFieldName)
             ->required()
             ->extraInputAttributes(function ($component) {
-                $repeaterStatePath = str($component->getStatePath())->before('.' . $component->getName()) . '.' . $this->repeaterFormFieldName;
+                $repeaterStatePath = str($component->getStatePath())->before('.'.$component->getName()).'.'.$this->repeaterFormFieldName;
                 $selectStatePath = $component->getStatePath();
 
                 return [
@@ -41,7 +40,7 @@ class BaseGenerationAction extends Action
                         const select = document.getElementById('{$selectStatePath}');
 
                         form.addEventListener('submit', () => {
-                            if (select.value === '" . GenerationLabelType::DEFAULT->value . "') {
+                            if (select.value === '".GenerationLabelType::DEFAULT->value."') {
                                 \$wire.set('{$repeaterStatePath}', null, false);
                             }
                         });
@@ -53,12 +52,12 @@ class BaseGenerationAction extends Action
                     '@change' => "() => {
                         const repeater = document.querySelector('[data-id=\"{$this->repeaterFormFieldName}-repeater\"]');
 
-                        if (\$event.target.value === '" . GenerationLabelType::CUSTOM->value . "') {
+                        if (\$event.target.value === '".GenerationLabelType::CUSTOM->value."') {
                             repeater.style.display = 'block';
                         } else {
                             repeater.style.display = 'none';
                         }
-                    }"
+                    }",
                 ];
             });
     }
@@ -73,11 +72,11 @@ class BaseGenerationAction extends Action
             ->collapsible(true);
     }
 
-
     protected function addProjectIdToItems($items)
     {
         return array_map(function ($item) {
             $item['project_id'] = $this->project->id;
+
             return $item;
         }, $items);
     }

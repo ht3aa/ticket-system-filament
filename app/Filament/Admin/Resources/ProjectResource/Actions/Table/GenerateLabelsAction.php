@@ -2,9 +2,9 @@
 
 namespace App\Filament\Admin\Resources\ProjectResource\Actions\Table;
 
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\Select;
 use Illuminate\Support\HtmlString;
 
 enum GenerationLabelType: string
@@ -33,7 +33,7 @@ class GenerateLabelsAction extends BaseGenerationAction
             ->action(function ($data) {
                 if ($data['generation_type'] === GenerationLabelType::DEFAULT->value) {
                     $this->generateDefaultLabels();
-                } else if ($data['generation_type'] === GenerationLabelType::CUSTOM->value) {
+                } elseif ($data['generation_type'] === GenerationLabelType::CUSTOM->value) {
                     $this->saveItems($data['labels']);
                 }
             });
@@ -62,6 +62,7 @@ class GenerateLabelsAction extends BaseGenerationAction
         return parent::repeaterFormField()
             ->itemLabel(function ($state, $container) {
                 $id = $container->getStatePath();
+
                 return new HtmlString("<span class='font-bold p-2' style='background-color: {$state['color']}' id='{$id}'>{$state['title']}</span>");
             })
             ->schema(
@@ -77,7 +78,7 @@ class GenerateLabelsAction extends BaseGenerationAction
                                             '@keyup' => "() => {
                                                         let itemLabelElement = document.getElementById('{$itemComponentStatePath}');
                                                         itemLabelElement.innerHTML = \$event.target.value;
-                                                    }"
+                                                    }",
                                         ];
                                     }),
 
@@ -89,9 +90,9 @@ class GenerateLabelsAction extends BaseGenerationAction
                                             '@blur' => "() => {
                                                         let itemLabelElement = document.getElementById('{$itemComponentStatePath}');
                                                         itemLabelElement.style.backgroundColor = \$event.target.value;
-                                                    }"
+                                                    }",
                                         ];
-                                    })
+                                    }),
                             ]),
 
                         $livewire->descriptionField(),
@@ -99,8 +100,6 @@ class GenerateLabelsAction extends BaseGenerationAction
                 }
             );
     }
-
-
 
     protected function generateDefaultLabels()
     {
@@ -124,7 +123,7 @@ class GenerateLabelsAction extends BaseGenerationAction
                 'title' => 'Urgent',
                 'color' => '#ff0000', // red
                 'description' => 'A task is urgent and needs to be completed immediately.',
-            ]
+            ],
         ]);
     }
 }

@@ -8,7 +8,6 @@ use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class MembersRelationManager extends RelationManager
 {
@@ -26,7 +25,7 @@ class MembersRelationManager extends RelationManager
                     ->required(),
 
                 Forms\Components\Select::make('project_role_id')
-                    ->relationship('projectRole', 'title', modifyQueryUsing: fn($query) => $query->where('project_id', $this->getOwnerRecord()->id))
+                    ->relationship('projectRole', 'title', modifyQueryUsing: fn ($query) => $query->where('project_id', $this->getOwnerRecord()->id))
                     ->required(),
             ]);
     }
@@ -35,7 +34,7 @@ class MembersRelationManager extends RelationManager
     {
         return $table
             ->recordTitleAttribute('title')
-            ->modifyQueryUsing(fn(Builder $query) => $query->with(['user', 'projectRole']))
+            ->modifyQueryUsing(fn (Builder $query) => $query->with(['user', 'projectRole']))
             ->columns([
                 Tables\Columns\TextColumn::make('user.name'),
                 Tables\Columns\TextColumn::make('projectRole.title'),

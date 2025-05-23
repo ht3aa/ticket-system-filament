@@ -21,7 +21,7 @@ class ProjectLabelFactory extends Factory
         $baseTitle = fake()->randomElement($baseTitles);
 
         return [
-            'title' => $baseTitle . ' ' . fake()->unique()->numberBetween(1, 1000),
+            'title' => $baseTitle.' '.fake()->unique()->numberBetween(1, 1000),
             'description' => fake()->sentence(),
             'color' => fake()->hexColor(),
             'project_id' => Project::factory(),
