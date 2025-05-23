@@ -4,14 +4,19 @@ namespace App\Filament\Admin\Resources;
 
 use App\Filament\Admin\Resources\ProjectResource\Pages;
 use App\Filament\Admin\Resources\ProjectResource\RelationManagers;
+use App\Filament\Exports\ProjectExporter;
+use App\Filament\Imports\ProjectImporter;
 use App\Models\Project;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Actions\ExportAction;
+use Filament\Tables\Actions\ImportAction;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Validation\Rules\File;
 
 class ProjectResource extends Resource
 {
@@ -37,6 +42,15 @@ class ProjectResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->headerActions([
+                ExportAction::make()
+                    ->exporter(ProjectExporter::class),
+                ImportAction::make()
+                    ->importer(ProjectImporter::class)
+                    ->fileRules([
+                        File::types(['csv', 'xlsx']),
+                    ]),
+            ])
             ->columns([
                 Tables\Columns\TextColumn::make('title')
                     ->searchable(),
