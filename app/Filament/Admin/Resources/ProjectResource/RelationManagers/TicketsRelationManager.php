@@ -2,11 +2,13 @@
 
 namespace App\Filament\Admin\Resources\ProjectResource\RelationManagers;
 
+use App\Enums\Icons;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Model;
 
 class TicketsRelationManager extends RelationManager
 {
@@ -44,5 +46,10 @@ class TicketsRelationManager extends RelationManager
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
+    }
+
+    public static function getIcon(Model $ownerRecord, string $pageClass): ?string
+    {
+        return Icons::TICKET->value;
     }
 }

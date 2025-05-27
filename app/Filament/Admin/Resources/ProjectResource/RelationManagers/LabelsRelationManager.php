@@ -4,11 +4,13 @@ namespace App\Filament\Admin\Resources\ProjectResource\RelationManagers;
 
 use App\Filament\Admin\Resources\ProjectResource\Actions\Table\GenerateLabelsAction;
 use App\Filament\Admin\Resources\ProjectResource\Actions\Table\HasChildrenAction;
+use App\Enums\Icons;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Model;
 
 class LabelsRelationManager extends RelationManager
 {
@@ -18,13 +20,15 @@ class LabelsRelationManager extends RelationManager
     {
         return Forms\Components\TextInput::make('title')
             ->required()
-            ->unique(ignoreRecord: true, modifyRuleUsing: fn ($rule) => $rule->where('project_id', $this->getOwnerRecord()->id))
+            ->prefixIcon(Icons::TEXT->value)
+            ->unique(ignoreRecord: true, modifyRuleUsing: fn($rule) => $rule->where('project_id', $this->getOwnerRecord()->id))
             ->maxLength(255);
     }
 
     public function colorField(): Forms\Components\ColorPicker
     {
         return Forms\Components\ColorPicker::make('color')
+            ->prefixIcon(Icons::COLOR->value)
             ->required();
     }
 
@@ -51,11 +55,13 @@ class LabelsRelationManager extends RelationManager
     {
         return $table
             ->recordTitleAttribute('title')
-            ->modifyQueryUsing(fn ($query) => $query->withExists('tickets'))
+            ->modifyQueryUsing(fn($query) => $query->withExists('tickets'))
             ->columns([
-                Tables\Columns\TextColumn::make('title'),
+                Tables\Columns\TextColumn::make('title')
+                    ->icon(Icons::TEXT->value),
                 Tables\Columns\ColorColumn::make('color'),
-                Tables\Columns\TextColumn::make('description'),
+                Tables\Columns\TextColumn::make('description')
+                    ->icon(Icons::TEXT->value),
             ])
             ->filters([
                 Tables\Filters\TrashedFilter::make(),
@@ -74,7 +80,7 @@ class LabelsRelationManager extends RelationManager
                     ->tooltip(function ($record) {
                         $ticketsCount = $record->tickets_exists;
 
-                        return __('system.has_children')." ({$ticketsCount} tickets)";
+                        return __('system.has_children') . " ({$ticketsCount} tickets)";
                     }),
             ])
             ->bulkActions([
@@ -84,5 +90,10 @@ class LabelsRelationManager extends RelationManager
                     Tables\Actions\RestoreBulkAction::make(),
                 ]),
             ]);
+    }
+
+    public static function getIcon(Model $ownerRecord, string $pageClass): ?string
+    {
+        return Icons::LABEL->value;
     }
 }

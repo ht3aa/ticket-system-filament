@@ -4,11 +4,13 @@ namespace App\Filament\Admin\Resources\ProjectResource\RelationManagers;
 
 use App\Filament\Admin\Resources\ProjectResource\Actions\Table\GenerateStatusesAction;
 use App\Filament\Admin\Resources\ProjectResource\Actions\Table\HasChildrenAction;
+use App\Enums\Icons;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Model;
 
 class StatusesRelationManager extends RelationManager
 {
@@ -18,7 +20,7 @@ class StatusesRelationManager extends RelationManager
     {
         return Forms\Components\TextInput::make('title')
             ->required()
-            ->unique(ignoreRecord: true, modifyRuleUsing: fn ($rule) => $rule->where('project_id', $this->getOwnerRecord()->id))
+            ->unique(ignoreRecord: true, modifyRuleUsing: fn($rule) => $rule->where('project_id', $this->getOwnerRecord()->id))
             ->columnSpanFull()
             ->maxLength(255);
     }
@@ -42,7 +44,7 @@ class StatusesRelationManager extends RelationManager
     {
         return $table
             ->recordTitleAttribute('title')
-            ->modifyQueryUsing(fn ($query) => $query->withExists('tickets'))
+            ->modifyQueryUsing(fn($query) => $query->withExists('tickets'))
             ->columns([
                 Tables\Columns\TextColumn::make('title'),
                 Tables\Columns\TextColumn::make('description'),
@@ -65,7 +67,7 @@ class StatusesRelationManager extends RelationManager
                     ->tooltip(function ($record) {
                         $ticketsCount = $record->tickets_exists;
 
-                        return __('system.has_children')." ({$ticketsCount} tickets)";
+                        return __('system.has_children') . " ({$ticketsCount} tickets)";
                     }),
             ])
             ->bulkActions([
@@ -75,5 +77,10 @@ class StatusesRelationManager extends RelationManager
                     Tables\Actions\ForceDeleteBulkAction::make(),
                 ]),
             ]);
+    }
+
+    public static function getIcon(Model $ownerRecord, string $pageClass): ?string
+    {
+        return Icons::STATUS->value;
     }
 }

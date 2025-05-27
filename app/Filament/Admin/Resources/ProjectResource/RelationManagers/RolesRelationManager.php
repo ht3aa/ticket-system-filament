@@ -3,11 +3,13 @@
 namespace App\Filament\Admin\Resources\ProjectResource\RelationManagers;
 
 use App\Filament\Admin\Resources\ProjectResource\Actions\Table\GenerateRolesAction;
+use App\Enums\Icons;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Model;
 
 class RolesRelationManager extends RelationManager
 {
@@ -17,7 +19,7 @@ class RolesRelationManager extends RelationManager
     {
         return TextInput::make('title')
             ->required()
-            ->unique(ignoreRecord: true, modifyRuleUsing: fn ($rule) => $rule->where('project_id', $this->getOwnerRecord()->id))
+            ->unique(ignoreRecord: true, modifyRuleUsing: fn($rule) => $rule->where('project_id', $this->getOwnerRecord()->id))
             ->maxLength(255);
     }
 
@@ -66,5 +68,10 @@ class RolesRelationManager extends RelationManager
                     Tables\Actions\ForceDeleteBulkAction::make(),
                 ]),
             ]);
+    }
+
+    public static function getIcon(Model $ownerRecord, string $pageClass): ?string
+    {
+        return Icons::ROLE->value;
     }
 }

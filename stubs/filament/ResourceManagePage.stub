@@ -5,13 +5,9 @@ namespace {{ namespace }};
 use {{ resource }};
 use Filament\Actions;
 use {{ baseResourcePage }};
-use App\Filament\Traits\HasFormActionIcons;
 
 class {{ resourcePageClass }} extends {{ baseResourcePageClass }}
 {
-    
-    use HasFormActionIcons;
-
     protected static string $resource = {{ resourceClass }}::class;
 
     protected function getHeaderActions(): array

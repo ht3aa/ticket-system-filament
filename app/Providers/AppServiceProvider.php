@@ -2,12 +2,15 @@
 
 namespace App\Providers;
 
+use App\Enums\Icons;
 use Illuminate\Support\ServiceProvider;
 use Filament\Forms\Components\Select;
 use Filament\Actions\CreateAction;
 use Filament\Tables\Actions\CreateAction as CreateTableAction;
+use Filament\Tables\Actions\EditAction as EditTableAction;
 use Filament\Tables\Actions\ExportAction as ExportTableAction;
 use Filament\Tables\Actions\ImportAction as ImportTableAction;
+use Filament\Tables\Actions\DeleteAction as DeleteTableAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
@@ -46,48 +49,62 @@ class AppServiceProvider extends ServiceProvider
 
         CreateAction::configureUsing(function (CreateAction $action) {
             $action
-                ->icon('heroicon-m-plus');
+                ->icon(Icons::CREATE->value);
         });
 
         CreateTableAction::configureUsing(function (CreateTableAction $action) {
             $action
-                ->icon('heroicon-m-plus');
+                ->modalSubmitAction(fn($action) => $action->icon(Icons::CREATE->value))
+                ->modalCancelAction(fn($action) => $action->icon(Icons::CANCEL->value))
+                ->icon(Icons::CREATE->value);
         });
 
 
         DeleteAction::configureUsing(function (DeleteAction $action) {
             $action
-                ->icon('heroicon-m-trash');
+                ->icon(Icons::DELETE->value);
+        });
+
+        DeleteTableAction::configureUsing(function (DeleteTableAction $action) {
+            $action
+                ->modalSubmitAction(fn($action) => $action->icon(Icons::DELETE->value))
+                ->modalCancelAction(fn($action) => $action->icon(Icons::CANCEL->value));
         });
 
         EditAction::configureUsing(function (EditAction $action) {
             $action
-                ->icon('heroicon-m-pencil-square');
+                ->icon(Icons::EDIT->value);
+        });
+
+        EditTableAction::configureUsing(function (EditTableAction $action) {
+            $action
+                ->modalSubmitAction(fn($action) => $action->icon(Icons::EDIT->value))
+                ->modalCancelAction(fn($action) => $action->icon(Icons::CANCEL->value));
         });
 
         ViewAction::configureUsing(function (ViewAction $action) {
             $action
-                ->icon('heroicon-m-eye');
+                ->icon(Icons::VIEW->value);
         });
 
         ExportAction::configureUsing(function (ExportAction $action) {
             $action
-                ->icon('heroicon-m-arrow-down-tray');
+                ->icon(Icons::EXPORT->value);
         });
 
         ImportAction::configureUsing(function (ImportAction $action) {
             $action
-                ->icon('heroicon-m-arrow-up-tray');
+                ->icon(Icons::IMPORT->value);
         });
 
         ExportTableAction::configureUsing(function (ExportTableAction $action) {
             $action
-                ->icon('heroicon-m-arrow-up-tray');
+                ->icon(Icons::EXPORT->value);
         });
 
         ImportTableAction::configureUsing(function (ImportTableAction $action) {
             $action
-                ->icon('heroicon-m-arrow-down-tray');
+                ->icon(Icons::IMPORT->value);
         });
 
         Table::configureUsing(function (Table $table) {
