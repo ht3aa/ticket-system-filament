@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Enums\Icons;
+use Closure;
 use Illuminate\Support\ServiceProvider;
 use Filament\Forms\Components\Select;
 use Filament\Actions\CreateAction;
@@ -17,6 +18,7 @@ use Filament\Actions\ViewAction;
 use Filament\Actions\ExportAction;
 use Filament\Actions\ImportAction;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Model;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -34,6 +36,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->globalFilamentConfigurations();
+        $this->limitedOptionsMacro();
     }
 
 
@@ -109,6 +112,49 @@ class AppServiceProvider extends ServiceProvider
 
         Table::configureUsing(function (Table $table) {
             $table->paginationPageOptions([10, 20, 50, 100]);
+        });
+    }
+
+
+    public function limitedOptionsMacro()
+    {
+        // usage: $this->limitedOptions(ProjectStatus::class, 'title')
+        Select::macro('limitedOptions', function (
+            string $modelClass,
+            string $titleAttribute,
+            $limit = 50,
+            ?Closure $modifyQueryUsing = null,
+            array $columns = ['*']
+        ) {
+            if ($modifyQueryUsing) {
+                $this->options(function () use ($modelClass, $titleAttribute, $limit, $modifyQueryUsing, $columns) {
+                    $query = $modelClass::limit($limit);
+
+                    if ($modifyQueryUsing) {
+                        $query = $this->evaluate($modifyQueryUsing, [
+                            'query' => $query,
+                        ]);
+                    }
+
+                    return $query->get($columns)->pluck($titleAttribute, 'id');
+                });
+            } else {
+                $this->options($modelClass::limit($limit)->get($columns)->pluck($titleAttribute, 'id'));
+            }
+
+            $this->getSearchResultsUsing(function (?string $search) use ($modelClass, $titleAttribute, $limit, $modifyQueryUsing, $columns) {
+                $query = $modelClass::where($titleAttribute, 'like', "%{$search}%")->limit($limit);
+
+                if ($modifyQueryUsing) {
+                    $query = $this->evaluate($modifyQueryUsing, [
+                        'query' => $query,
+                    ]);
+                }
+
+                return $query->get($columns)->pluck($titleAttribute, 'id');
+            });
+
+            return $this;
         });
     }
 }
