@@ -126,9 +126,11 @@ class AppServiceProvider extends ServiceProvider
             ?Closure $modifyQueryUsing = null,
             array $columns = ['*']
         ) {
+            $model = new $modelClass;
+
             if ($modifyQueryUsing) {
-                $this->options(function () use ($modelClass, $titleAttribute, $limit, $modifyQueryUsing, $columns) {
-                    $query = $modelClass::limit($limit);
+                $this->options(function () use ($model, $titleAttribute, $limit, $modifyQueryUsing, $columns) {
+                    $query = $model->limit($limit);
 
                     if ($modifyQueryUsing) {
                         $query = $this->evaluate($modifyQueryUsing, [
@@ -136,14 +138,14 @@ class AppServiceProvider extends ServiceProvider
                         ]);
                     }
 
-                    return $query->get($columns)->pluck($titleAttribute, 'id');
+                    return $query->get($columns)->pluck($titleAttribute, $model->getKeyName());
                 });
             } else {
-                $this->options($modelClass::limit($limit)->get($columns)->pluck($titleAttribute, 'id'));
+                $this->options($model->limit($limit)->get($columns)->pluck($titleAttribute, $model->getKeyName()));
             }
 
-            $this->getSearchResultsUsing(function (?string $search) use ($modelClass, $titleAttribute, $limit, $modifyQueryUsing, $columns) {
-                $query = $modelClass::where($titleAttribute, 'like', "%{$search}%")->limit($limit);
+            $this->getSearchResultsUsing(function (?string $search) use ($model, $titleAttribute, $limit, $modifyQueryUsing, $columns) {
+                $query = $model->where($titleAttribute, 'like', "%{$search}%")->limit($limit);
 
                 if ($modifyQueryUsing) {
                     $query = $this->evaluate($modifyQueryUsing, [
@@ -151,7 +153,7 @@ class AppServiceProvider extends ServiceProvider
                     ]);
                 }
 
-                return $query->get($columns)->pluck($titleAttribute, 'id');
+                return $query->get($columns)->pluck($titleAttribute, $model->getKeyName());
             });
 
             return $this;
