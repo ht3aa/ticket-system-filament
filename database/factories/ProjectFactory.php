@@ -17,7 +17,7 @@ class ProjectFactory extends Factory
     public function definition(): array
     {
         return [
-            'title' => fake()->uuid(),
+            'title' => fake()->unique()->realText(),
             'description' => fake()->paragraph(),
         ];
     }

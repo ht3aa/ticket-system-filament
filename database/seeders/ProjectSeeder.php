@@ -19,6 +19,6 @@ class ProjectSeeder extends Seeder
         ]);
 
         // Create additional projects
-        Project::factory(5)->create();
+        Project::factory(500)->create();
     }
 }

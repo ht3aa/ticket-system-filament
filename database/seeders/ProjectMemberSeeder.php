@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use App\Models\Project;
 use App\Models\ProjectMember;
-use App\Models\ProjectRole;
 use Illuminate\Database\Seeder;
 
 class ProjectMemberSeeder extends Seeder
@@ -14,7 +13,7 @@ class ProjectMemberSeeder extends Seeder
      */
     public function run(): void
     {
-        $projects = Project::limit(1)->get();
+        $projects = Project::all();
 
         foreach ($projects as $project) {
             // Create project members
