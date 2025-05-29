@@ -40,12 +40,14 @@ class TicketResource extends Resource
                 Section::make('Ticket Information')
                     ->schema([
                         Forms\Components\TextInput::make('code')
-                            ->default(fn () => 'TICKET-'.str_pad(Ticket::count() + 1, 4, '0', STR_PAD_LEFT))
+                            ->default(fn() => 'TICKET-' . str_pad(Ticket::count() + 1, 4, '0', STR_PAD_LEFT))
                             ->readOnly()
                             ->required(),
 
                         Forms\Components\Select::make('project_id')
-                            ->options(Project::all()->pluck('title', 'id'))
+                            ->searchable()
+                            ->relationship('project', 'title')
+                            ->limit(100)
                             ->extraInputAttributes([
                                 '@change' => "() => {
                                     \$wire.set('data.project_status_id', null);
@@ -55,15 +57,25 @@ class TicketResource extends Resource
                             ->required(),
 
                         Forms\Components\Select::make('project_status_id')
-                            ->options(fn ($get) => ProjectStatus::where('project_id', $get('project_id'))->pluck('title', 'id'))
+                            ->searchable()
+                            ->relationship('projectStatus', 'title', modifyQueryUsing: function (Builder $query, $get) {
+                                return $query->where('project_id', $get('project_id'));
+                            })
+                            ->optionsLimit(10)
                             ->required(),
 
                         Forms\Components\Select::make('project_label_id')
-                            ->options(fn ($get) => ProjectLabel::where('project_id', $get('project_id'))->pluck('title', 'id'))
+                            ->searchable()
+                            ->relationship('projectLabel', 'title', modifyQueryUsing: function (Builder $query, $get) {
+                                return $query->where('project_id', $get('project_id'));
+                            })
+                            ->optionsLimit(10)
                             ->required(),
 
                         Forms\Components\Select::make('parent_id')
-                            ->options(Ticket::all()->pluck('title', 'id')),
+                            ->searchable()
+                            ->relationship('parent', 'title')
+                            ->optionsLimit(10),
                     ])
                     ->columnSpan(4),
 
@@ -79,8 +91,7 @@ class TicketResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('code')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('parent_id')
-                    ->numeric()
+                Tables\Columns\TextColumn::make('parent.title')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('projectStatus.title')
                     ->numeric()
@@ -91,7 +102,7 @@ class TicketResource extends Resource
                 Tables\Columns\TextColumn::make('projectLabel.title')
                     ->numeric()
                     ->label('Label')
-                    ->extraCellAttributes(fn ($record) => [
+                    ->extraCellAttributes(fn($record) => [
                         'style' => "border-bottom: 3px solid {$record->projectLabel->color};",
                     ])
                     ->sortable(),
