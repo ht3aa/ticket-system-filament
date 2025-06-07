@@ -16,19 +16,30 @@ class ProjectRole extends Model
         'project_id',
     ];
 
+    protected $hidden = [
+        'id',
+        'created_at',
+        'updated_at',
+        'deleted_at',
+    ];
+
     public function project()
     {
         return $this->belongsTo(Project::class);
     }
 
-    public function members()
+    public function projectMembers()
     {
-        return $this->hasMany(ProjectMember::class, 'role_id');
+        return $this->hasMany(ProjectMember::class);
     }
 
-    public function permissions()
+    public function projectPermissions()
     {
-        return $this->belongsToMany(ProjectPermission::class, 'project_roles_permissions', 'role_id', 'permission_id')
-            ->withPivot('project_id');
+        return $this->belongsToMany(
+            ProjectPermission::class,
+            'project_roles_permissions',
+            'project_role_id',
+            'project_permission_id'
+        )->withPivot('project_id');
     }
 }

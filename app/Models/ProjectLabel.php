@@ -17,6 +17,13 @@ class ProjectLabel extends Model
         'project_id',
     ];
 
+    protected $hidden = [
+        'id',
+        'created_at',
+        'updated_at',
+        'deleted_at',
+    ];
+
     public function project()
     {
         return $this->belongsTo(Project::class);
@@ -24,11 +31,11 @@ class ProjectLabel extends Model
 
     public function tickets()
     {
-        return $this->hasMany(TicketInformation::class, 'label_id');
+        return $this->hasMany(Ticket::class);
     }
 
-    public function statuses()
+    public function hasChildren(): bool
     {
-        return $this->belongsToMany(ProjectStatus::class, 'project_labels_statuses', 'label_id', 'status_id');
+        return $this->tickets_exists > 0;
     }
 }

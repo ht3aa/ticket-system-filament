@@ -4,8 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Project extends Model
 {
@@ -14,6 +14,13 @@ class Project extends Model
     protected $fillable = [
         'title',
         'description',
+    ];
+
+    protected $hidden = [
+        'id',
+        'created_at',
+        'updated_at',
+        'deleted_at',
     ];
 
     public function roles()
@@ -33,7 +40,7 @@ class Project extends Model
 
     public function tickets()
     {
-        return $this->hasMany(TicketInformation::class);
+        return $this->hasMany(Ticket::class);
     }
 
     /**

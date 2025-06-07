@@ -11,23 +11,30 @@ class ProjectRolePermission extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'role_id',
-        'permission_id',
+        'project_role_id',
+        'project_permission_id',
         'project_id',
     ];
 
-    public function role()
+    protected $hidden = [
+        'id',
+        'created_at',
+        'updated_at',
+        'deleted_at',
+    ];
+
+    public function projectRole()
     {
-        return $this->belongsTo(ProjectRole::class, 'role_id');
+        return $this->belongsTo(ProjectRole::class);
     }
 
-    public function permission()
+    public function projectPermission()
     {
-        return $this->belongsTo(ProjectPermission::class, 'permission_id');
+        return $this->belongsTo(ProjectPermission::class);
     }
 
     public function project()
     {
-        return $this->belongsTo(Project::class, 'project_id');
+        return $this->belongsTo(Project::class);
     }
 }

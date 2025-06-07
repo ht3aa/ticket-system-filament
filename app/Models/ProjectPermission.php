@@ -16,14 +16,15 @@ class ProjectPermission extends Model
         'project_id',
     ];
 
+    protected $hidden = [
+        'id',
+        'created_at',
+        'updated_at',
+        'deleted_at',
+    ];
+
     public function project()
     {
         return $this->belongsTo(Project::class);
-    }
-
-    public function roles()
-    {
-        return $this->belongsToMany(ProjectRole::class, 'project_roles_permissions', 'permission_id', 'role_id')
-            ->withPivot('project_id');
     }
 }

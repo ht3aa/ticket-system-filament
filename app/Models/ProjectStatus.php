@@ -13,15 +13,28 @@ class ProjectStatus extends Model
     protected $fillable = [
         'title',
         'description',
+        'project_id',
     ];
+
+    protected $hidden = [
+        'id',
+        'created_at',
+        'updated_at',
+        'deleted_at',
+    ];
+
+    public function project()
+    {
+        return $this->belongsTo(Project::class);
+    }
 
     public function tickets()
     {
-        return $this->hasMany(TicketInformation::class, 'status_id');
+        return $this->hasMany(Ticket::class);
     }
 
-    public function labels()
+    public function hasChildren(): bool
     {
-        return $this->belongsToMany(ProjectLabel::class, 'project_labels_statuses', 'status_id', 'label_id');
+        return $this->tickets_exists;
     }
 }

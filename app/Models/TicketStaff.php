@@ -13,8 +13,15 @@ class TicketStaff extends Model
 
     protected $fillable = [
         'ticket_id',
-        'member_id',
+        'project_member_id',
         'type',
+    ];
+
+    protected $hidden = [
+        'id',
+        'created_at',
+        'updated_at',
+        'deleted_at',
     ];
 
     /**
@@ -22,13 +29,13 @@ class TicketStaff extends Model
      */
     public function ticket(): BelongsTo
     {
-        return $this->belongsTo(TicketInformation::class, 'ticket_id');
+        return $this->belongsTo(Ticket::class);
     }
 
     /**
      * Get the project member associated with this ticket staff.
      */
-    public function member(): BelongsTo
+    public function projectMember(): BelongsTo
     {
         return $this->belongsTo(ProjectMember::class);
     }

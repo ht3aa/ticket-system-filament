@@ -4,28 +4,36 @@ namespace App\Filament\Admin\Resources;
 
 use App\Filament\Admin\Resources\ProjectResource\Pages;
 use App\Filament\Admin\Resources\ProjectResource\RelationManagers;
+use App\Filament\Exports\ProjectExporter;
+use App\Filament\Imports\ProjectImporter;
+use App\Enums\Icons;
 use App\Models\Project;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Actions\ExportAction;
+use Filament\Tables\Actions\ImportAction;
 use Filament\Tables\Table;
+use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Validation\Rules\File;
 
 class ProjectResource extends Resource
 {
     protected static ?string $model = Project::class;
-
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 Forms\Components\Section::make('Project Information')
+                    ->icon(Icons::PROJECT->value)
                     ->schema([
                         Forms\Components\TextInput::make('title')
+                            ->prefixIcon(Icons::TEXT->value)
+                            ->unique(ignoreRecord: true)
                             ->required(),
                         Forms\Components\Textarea::make('description')
                             ->columnSpanFull(),
@@ -36,21 +44,22 @@ class ProjectResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->headerActions([
+                ExportAction::make()
+                    ->exporter(ProjectExporter::class),
+                ImportAction::make()
+                    ->importer(ProjectImporter::class)
+                    ->fileRules([
+                        File::types(['csv', 'xlsx']),
+                    ]),
+            ])
             ->columns([
                 Tables\Columns\TextColumn::make('title')
+                    ->icon(Icons::TEXT->value)
                     ->searchable(),
-                Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('deleted_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('description')
+                    ->icon(Icons::TEXT->value)
+                    ->searchable(),
             ])
             ->filters([
                 Tables\Filters\TrashedFilter::make(),
@@ -58,6 +67,9 @@ class ProjectResource extends Resource
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\RestoreAction::make(),
+                Tables\Actions\ForceDeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -73,10 +85,8 @@ class ProjectResource extends Resource
         return [
             RelationManagers\LabelsRelationManager::class,
             RelationManagers\StatusesRelationManager::class,
-            RelationManagers\PermissionsRelationManager::class,
             RelationManagers\RolesRelationManager::class,
             RelationManagers\MembersRelationManager::class,
-            RelationManagers\LabelsStatusesRelationManager::class,
             RelationManagers\TicketsRelationManager::class,
         ];
     }
@@ -97,5 +107,16 @@ class ProjectResource extends Resource
             ->withoutGlobalScopes([
                 SoftDeletingScope::class,
             ]);
+    }
+
+
+    public static function getNavigationBadge(): ?string
+    {
+        return once(fn() => number_format(parent::getEloquentQuery()->count()));
+    }
+
+    public static function getNavigationIcon(): string | Htmlable | null
+    {
+        return Icons::PROJECT->value;
     }
 }
