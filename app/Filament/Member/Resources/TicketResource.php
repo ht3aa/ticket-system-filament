@@ -45,7 +45,9 @@ class TicketResource extends Resource
                             ->required(),
 
                         Forms\Components\Select::make('project_id')
-                            ->limitedOptions(Project::class, 'title')
+                            ->relationship('project', 'title')
+                            ->searchable()
+                            ->preload()
                             ->extraInputAttributes([
                                 '@change' => "() => {
                                     \$wire.set('data.project_status_id', null, false);
