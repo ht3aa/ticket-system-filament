@@ -7,6 +7,7 @@ use App\Filament\Admin\Resources\ProjectResource\RelationManagers;
 use App\Filament\Exports\ProjectExporter;
 use App\Filament\Imports\ProjectImporter;
 use App\Enums\Icons;
+use App\Filament\Customs\Tables\Actions\ActivityAction;
 use App\Models\Project;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -55,9 +56,7 @@ class ProjectResource extends Resource
             ])
             ->columns([
                 Tables\Columns\TextColumn::make('title')
-                    ->icon(Icons::TEXT->value)
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('description')
+                    ->limit(100)
                     ->icon(Icons::TEXT->value)
                     ->searchable(),
             ])
@@ -70,6 +69,7 @@ class ProjectResource extends Resource
                 Tables\Actions\DeleteAction::make(),
                 Tables\Actions\RestoreAction::make(),
                 Tables\Actions\ForceDeleteAction::make(),
+                ActivityAction::make()->filterBySubject(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
